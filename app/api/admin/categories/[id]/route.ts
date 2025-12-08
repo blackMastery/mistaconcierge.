@@ -16,7 +16,7 @@ async function checkAdminAuth() {
     .eq('id', user.id)
     .single()
   
-  if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+  if (!profile || !['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
     return { isAdmin: false, error: 'Forbidden' }
   }
   
@@ -82,12 +82,15 @@ export async function PUT(
       sanitizedData.is_active = is_active
     }
     
-    const { data: category, error: categoryError } = await supabase
+    const updateResult = await supabase
       .from('categories')
+      // @ts-ignore - TypeScript limitation with dynamic update types
       .update(sanitizedData)
       .eq('id', params.id)
       .select()
       .single()
+    
+    const { data: category, error: categoryError } = updateResult
     
     if (categoryError) throw categoryError
     

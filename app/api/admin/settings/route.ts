@@ -19,7 +19,7 @@ export async function GET() {
       .eq('id', user.id)
       .single()
 
-    if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+    if (!profile || !['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -36,7 +36,7 @@ export async function GET() {
     }
 
     // Transform settings array into object grouped by category
-    const settingsByCategory = (settings || []).reduce((acc, setting) => {
+    const settingsByCategory = (settings || []).reduce((acc: any, setting: any) => {
       if (!acc[setting.category]) {
         acc[setting.category] = {}
       }
@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
-    if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+    if (!profile || !['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -105,13 +105,16 @@ export async function PUT(request: NextRequest) {
           }
         }
 
-        const { error: updateError } = await supabase
+        const updateResult = await supabase
           .from('settings')
+          // @ts-ignore - TypeScript limitation with dynamic update types
           .update({
             value: jsonValue,
             updated_by: user.id,
           })
           .eq('key', key)
+        
+        const { error: updateError } = updateResult
 
         if (updateError) {
           console.error(`Error updating setting ${key}:`, updateError)

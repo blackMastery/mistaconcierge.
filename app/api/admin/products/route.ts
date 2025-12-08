@@ -16,7 +16,7 @@ async function checkAdminAuth() {
     .eq('id', user.id)
     .single()
   
-  if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+  if (!profile || !['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
     return { isAdmin: false, error: 'Forbidden' }
   }
   
@@ -82,8 +82,9 @@ export async function POST(request: NextRequest) {
     
     // Insert images
     if (image_data && image_data.length > 0) {
+      const productAny = product as any
       const imageRecords = image_data.map((img: any) => ({
-        product_id: product.id,
+        product_id: productAny.id,
         url: img.url,
         alt_text: img.alt_text || productData.name,
         display_order: img.display_order ?? 0,
@@ -99,8 +100,9 @@ export async function POST(request: NextRequest) {
     
     // Insert categories
     if (category_ids && category_ids.length > 0) {
+      const productAny = product as any
       const categoryRecords = category_ids.map((catId: string) => ({
-        product_id: product.id,
+        product_id: productAny.id,
         category_id: catId
       }))
       

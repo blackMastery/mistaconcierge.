@@ -16,7 +16,7 @@ async function checkAdminAuth() {
     .eq('id', user.id)
     .single()
   
-  if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+  if (!profile || !['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
     return { isAdmin: false, error: 'Forbidden' }
   }
   

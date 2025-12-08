@@ -13,10 +13,10 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 to-blue-800 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-r from-black to-gray-900 text-white overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Threads 
-            color={[1, 1, 1]} 
+            color={[0.85, 0.65, 0.13]} 
             amplitude={1}
             distance={0}
             className="w-full h-full"
@@ -27,21 +27,21 @@ export default async function HomePage() {
             <h1 className="text-5xl font-bold mb-6">
               Discover Caribbean & Latin America
             </h1>
-            <p className="text-xl mb-8 text-blue-100">
+            <p className="text-xl mb-8 text-gray-200">
               Experience solo, private or guided vacation offerings with a full concierge level service. 
               Specializing in Caribbean and Latin America travel.
             </p>
             <div className="flex gap-4">
               <Link 
                 href="/products"
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center gap-2"
+                className="bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors inline-flex items-center gap-2"
               >
                 Shop Now
                 <ArrowRight className="h-5 w-5" />
               </Link>
               <Link 
                 href="/categories/new-arrivals"
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                className="border-2 border-yellow-500 text-yellow-500 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-500 hover:text-black transition-colors"
               >
                 New Arrivals
               </Link>
@@ -140,7 +140,7 @@ export default async function HomePage() {
                 <span className="text-2xl">🚚</span>
               </div>
               <h3 className="font-semibold mb-2">Free Shipping</h3>
-              <p className="text-gray-600 text-sm">On orders over $500</p>
+              <p className="text-gray-600 text-sm">On purchases over $500</p>
             </div>
 
             <div className="text-center">

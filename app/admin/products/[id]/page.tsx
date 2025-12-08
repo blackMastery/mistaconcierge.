@@ -33,10 +33,11 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
   }
 
   // Transform product data for the form
+  const productAny = product as any
   const productForForm = {
-    ...product,
-    product_categories: product.product_categories || [],
-    product_images: product.product_images || []
+    ...productAny,
+    product_categories: productAny.product_categories || [],
+    product_images: productAny.product_images || []
   }
 
   return (

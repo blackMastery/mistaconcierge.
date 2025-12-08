@@ -48,7 +48,6 @@ export default function Footer() {
               <li><Link href="/shipping" className="hover:text-white">Shipping Info</Link></li>
               <li><Link href="/returns" className="hover:text-white">Returns & Exchanges</Link></li>
               <li><Link href="/faq" className="hover:text-white">FAQ</Link></li>
-              <li><Link href="/track-order" className="hover:text-white">Track Order</Link></li>
             </ul>
           </div>
 
@@ -57,9 +56,7 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">My Account</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/account" className="hover:text-white">My Account</Link></li>
-              <li><Link href="/account/orders" className="hover:text-white">Order History</Link></li>
               <li><Link href="/account/addresses" className="hover:text-white">Addresses</Link></li>
-              <li><Link href="/cart" className="hover:text-white">Shopping Cart</Link></li>
               <li><Link href="/account/wishlist" className="hover:text-white">Wishlist</Link></li>
             </ul>
           </div>

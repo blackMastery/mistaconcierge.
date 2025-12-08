@@ -25,8 +25,8 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const primaryImage = product.product_images?.find(img => img.is_primary) || product.product_images?.[0]
-  const hasDiscount = product.sale_price && product.sale_price < product.base_price
-  const displayPrice = hasDiscount ? product.sale_price : product.base_price
+  const hasDiscount = product.sale_price !== null && product.sale_price !== undefined && product.sale_price < product.base_price
+  const displayPrice = hasDiscount && product.sale_price !== null ? product.sale_price : product.base_price
   const isPreOrder = product.status === 'pre_order'
   const isOutOfStock = product.stock_quantity === 0
 

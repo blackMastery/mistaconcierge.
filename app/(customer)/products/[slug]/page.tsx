@@ -1,8 +1,10 @@
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getProductBySlug } from '@/lib/api/products'
 import { formatCurrency } from '@/lib/utils/currency'
-import { Star } from 'lucide-react'
+import { Star, Phone, Mail, MapPin } from 'lucide-react'
+import ProductImageGallery from '@/components/customer/ProductImageGallery'
+import WhatsAppButton from '@/components/customer/WhatsAppButton'
+import { getStoreSettings } from '@/lib/api/settings'
 
 interface ProductPageProps {
   params: {
@@ -11,62 +13,48 @@ interface ProductPageProps {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = await getProductBySlug(params.slug)
+  const [product, storeSettings] = await Promise.all([
+    getProductBySlug(params.slug),
+    getStoreSettings()
+  ])
 
   if (!product) {
     notFound()
   }
 
   const primaryImage = product.product_images?.find(img => img.is_primary) || product.product_images?.[0]
-  const hasDiscount = product.sale_price && product.sale_price < product.base_price
-  const displayPrice = hasDiscount ? product.sale_price : product.base_price
-  const savings = hasDiscount ? product.base_price - product.sale_price : 0
+  const hasDiscount = product.sale_price !== null && product.sale_price !== undefined && product.sale_price < product.base_price
+  const displayPrice = hasDiscount && product.sale_price !== null ? product.sale_price : product.base_price
+  const savings = hasDiscount && product.sale_price !== null ? product.base_price - product.sale_price : 0
 
   // Calculate average rating
   const avgRating = product.reviews?.length 
     ? product.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / product.reviews.length 
     : 0
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Product Images */}
-        <div className="space-y-4">
-          <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
-            {primaryImage ? (
-              <Image
-                src={primaryImage.url}
-                alt={primaryImage.alt_text || product.name}
-                fill
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="flex items-center justify-center h-full text-gray-400">
-                No Image Available
-              </div>
-            )}
-          </div>
+  // Prepare WhatsApp message
+  const whatsappMessage = `Hello! I'm interested in: ${product.name}${product.sku ? ` (SKU: ${product.sku})` : ''}`
+  const whatsappNumber = (() => {
+    const num = storeSettings.whatsapp_number || storeSettings.store_phone || ''
+    if (typeof num === 'object') {
+      return JSON.stringify(num)
+    }
+    return String(num)
+  })()
 
-          {/* Thumbnail Gallery */}
-          {product.product_images && product.product_images.length > 1 && (
-            <div className="grid grid-cols-4 gap-4">
-              {product.product_images.map((image: any, idx: number) => (
-                <div key={image.id} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-75">
-                  <Image
-                    src={image.url}
-                    alt={image.alt_text || `${product.name} ${idx + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+  return (
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        {/* Product Images */}
+        <div className="w-full">
+          <ProductImageGallery 
+            images={product.product_images || []} 
+            productName={product.name}
+          />
         </div>
 
         {/* Product Details */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             
@@ -133,52 +121,109 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           {/* Dimensions */}
           {(product.width || product.height || product.depth || product.weight) && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold mb-3">Specifications</h3>
-              <dl className="grid grid-cols-2 gap-3 text-sm">
+            <div className="bg-gray-50 p-4 sm:p-6 rounded-lg">
+              <h3 className="font-semibold mb-3 text-lg">Specifications</h3>
+              <dl className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
                 {product.width && (
                   <>
                     <dt className="text-gray-600">Width:</dt>
-                    <dd className="font-medium">{product.width} inches</dd>
+                    <dd className="font-medium">
+                      {typeof product.width === 'object' ? JSON.stringify(product.width) : product.width} inches
+                    </dd>
                   </>
                 )}
                 {product.height && (
                   <>
                     <dt className="text-gray-600">Height:</dt>
-                    <dd className="font-medium">{product.height} inches</dd>
+                    <dd className="font-medium">
+                      {typeof product.height === 'object' ? JSON.stringify(product.height) : product.height} inches
+                    </dd>
                   </>
                 )}
                 {product.depth && (
                   <>
                     <dt className="text-gray-600">Depth:</dt>
-                    <dd className="font-medium">{product.depth} inches</dd>
+                    <dd className="font-medium">
+                      {typeof product.depth === 'object' ? JSON.stringify(product.depth) : product.depth} inches
+                    </dd>
                   </>
                 )}
                 {product.weight && (
                   <>
                     <dt className="text-gray-600">Weight:</dt>
-                    <dd className="font-medium">{product.weight} lbs</dd>
+                    <dd className="font-medium">
+                      {typeof product.weight === 'object' ? JSON.stringify(product.weight) : product.weight} lbs
+                    </dd>
                   </>
                 )}
               </dl>
             </div>
           )}
 
-          {/* Add to Cart Button */}
-          <button
-            disabled={product.stock_quantity === 0 && product.status !== 'pre_order'}
-            className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-lg"
-          >
-            {product.stock_quantity > 0 ? 'Add to Cart' : product.status === 'pre_order' ? 'Pre-Order Now' : 'Out of Stock'}
-          </button>
+          {/* Contact Information & WhatsApp */}
+          <div className="bg-blue-50 border border-blue-200 p-4 sm:p-6 rounded-lg space-y-4">
+            <h3 className="font-semibold text-lg mb-4">Contact Us</h3>
+            
+            {/* Contact Details */}
+            <div className="space-y-3 text-sm">
+              {storeSettings.store_phone && (
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                  <a 
+                    href={`tel:${typeof storeSettings.store_phone === 'string' ? storeSettings.store_phone : String(storeSettings.store_phone)}`}
+                    className="text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    {typeof storeSettings.store_phone === 'object' 
+                      ? JSON.stringify(storeSettings.store_phone) 
+                      : String(storeSettings.store_phone)}
+                  </a>
+                </div>
+              )}
+              {storeSettings.store_email && (
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                  <a 
+                    href={`mailto:${typeof storeSettings.store_email === 'string' ? storeSettings.store_email : String(storeSettings.store_email)}`}
+                    className="text-gray-700 hover:text-blue-600 transition-colors break-all"
+                  >
+                    {typeof storeSettings.store_email === 'object' 
+                      ? JSON.stringify(storeSettings.store_email) 
+                      : String(storeSettings.store_email)}
+                  </a>
+                </div>
+              )}
+              {storeSettings.store_address && (
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">
+                    {typeof storeSettings.store_address === 'object' 
+                      ?  'No address available'
+                      : storeSettings.store_address}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* WhatsApp Button */}
+            {whatsappNumber && (
+              <div className="pt-2">
+                <WhatsAppButton
+                  phoneNumber={whatsappNumber}
+                  message={whatsappMessage}
+                  variant="inline"
+                  className="w-full sm:w-auto"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Full Description */}
       {product.description && (
-        <div className="mt-12 border-t pt-12">
-          <h2 className="text-2xl font-bold mb-6">Product Description</h2>
-          <div className="prose max-w-none text-gray-700 whitespace-pre-wrap">
+        <div className="mt-8 sm:mt-12 border-t pt-8 sm:pt-12">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Product Description</h2>
+          <div className="prose max-w-none text-gray-700 whitespace-pre-wrap text-sm sm:text-base">
             {product.description}
           </div>
         </div>
@@ -186,12 +231,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       {/* Reviews Section */}
       {product.reviews && product.reviews.length > 0 && (
-        <div className="mt-12 border-t pt-12">
-          <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
-          <div className="space-y-6">
+        <div className="mt-8 sm:mt-12 border-t pt-8 sm:pt-12">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Customer Reviews</h2>
+          <div className="space-y-4 sm:space-y-6">
             {product.reviews.map((review: any) => (
-              <div key={review.id} className="bg-gray-50 p-6 rounded-lg">
-                <div className="flex items-center gap-4 mb-3">
+              <div key={review.id} className="bg-gray-50 p-4 sm:p-6 rounded-lg">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-3">
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
@@ -204,20 +249,31 @@ export default async function ProductPage({ params }: ProductPageProps) {
                       />
                     ))}
                   </div>
-                  <span className="font-medium">{review.user?.full_name || 'Anonymous'}</span>
-                  <span className="text-sm text-gray-500">
+                  <span className="font-medium text-sm sm:text-base">{review.user?.full_name || 'Anonymous'}</span>
+                  <span className="text-xs sm:text-sm text-gray-500">
                     {new Date(review.created_at).toLocaleDateString()}
                   </span>
                 </div>
                 {review.title && (
-                  <h4 className="font-semibold mb-2">{review.title}</h4>
+                  <h4 className="font-semibold mb-2 text-sm sm:text-base">{review.title}</h4>
                 )}
                 {review.comment && (
-                  <p className="text-gray-700">{review.comment}</p>
+                  <p className="text-gray-700 text-sm sm:text-base">{review.comment}</p>
                 )}
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Floating WhatsApp Button */}
+      {whatsappNumber && (
+        <div className="fixed bottom-6 right-6 z-40">
+          <WhatsAppButton
+            phoneNumber={whatsappNumber}
+            message={whatsappMessage}
+            variant="floating"
+          />
         </div>
       )}
     </div>

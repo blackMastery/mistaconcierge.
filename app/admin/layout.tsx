@@ -29,7 +29,7 @@ export default async function AdminLayout({
     .eq('id', user.id)
     .single()
   
-  if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+  if (!profile || !['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
     redirect('/')
   }
 

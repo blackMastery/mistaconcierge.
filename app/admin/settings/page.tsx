@@ -202,6 +202,27 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
+              <label className="block text-sm font-medium mb-1">WhatsApp Number</label>
+              <input
+                type="tel"
+                value={parseJsonValue(getSettingValue('store', 'whatsapp_number', ''))}
+                onChange={(e) => updateSetting('store', 'whatsapp_number', e.target.value)}
+                placeholder="e.g., +1234567890"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <p className="text-xs text-gray-500 mt-1">Include country code (e.g., +1 for US)</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Store Address</label>
+              <textarea
+                value={parseJsonValue(getSettingValue('store', 'store_address', ''))}
+                onChange={(e) => updateSetting('store', 'store_address', e.target.value)}
+                rows={2}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Store physical address"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium mb-1">Store Logo URL</label>
               <input
                 type="url"
@@ -372,18 +393,6 @@ export default function AdminSettingsPage() {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">Email Notifications</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="order_confirmation_enabled"
-                checked={parseJsonValue(getSettingValue('email', 'order_confirmation_enabled', true))}
-                onChange={(e) => updateSetting('email', 'order_confirmation_enabled', e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="order_confirmation_enabled" className="text-sm font-medium">
-                Send Order Confirmation Emails
-              </label>
-            </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"

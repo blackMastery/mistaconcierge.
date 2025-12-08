@@ -30,7 +30,7 @@ export default function LoginPage() {
           .eq('id', session.user.id)
           .single()
         
-        if (profile && ['admin', 'super_admin'].includes(profile.role)) {
+        if (profile && ['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
           router.push(redirect)
         }
       }
@@ -74,7 +74,7 @@ export default function LoginPage() {
           return
         }
 
-        if (!['admin', 'super_admin'].includes(profile.role)) {
+        if (!['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
           setError('Access denied. Admin privileges required.')
           await supabase.auth.signOut()
           setLoading(false)

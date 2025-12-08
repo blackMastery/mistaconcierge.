@@ -59,7 +59,7 @@ export default async function AdminProductsPage() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {products && products.length > 0 ? (
-                products.map((product) => {
+                (products as any[]).map((product: any) => {
                   const primaryImage = product.product_images?.find((img: any) => img.is_primary)
                   const hasDiscount = product.sale_price && product.sale_price < product.base_price
                   const displayPrice = hasDiscount ? product.sale_price : product.base_price
