@@ -123,7 +123,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
 
   const handleCategoryToggle = (categoryId: string) => {
     const ids = formData.category_ids.includes(categoryId)
-      ? formData.category_ids.filter(id => id !== categoryId)
+      ? formData.category_ids.filter((id: string) => id !== categoryId)
       : [...formData.category_ids, categoryId]
     setFormData({ ...formData, category_ids: ids })
   }
@@ -202,14 +202,40 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     }
   }
 
+  // Extract storage path from Supabase public URL
+  const extractStoragePath = (url: string): string | null => {
+    try {
+      // Supabase public URL format: https://[project].supabase.co/storage/v1/object/public/product-images/products/filename.jpg
+      const urlObj = new URL(url)
+      const pathMatch = urlObj.pathname.match(/\/storage\/v1\/object\/public\/product-images\/(.+)$/)
+      if (pathMatch && pathMatch[1]) {
+        return pathMatch[1]
+      }
+      return null
+    } catch {
+      return null
+    }
+  }
+
   const handleRemoveImage = async (index: number) => {
     const imageToRemove = images[index]
     const wasPrimary = imageToRemove.is_primary
 
-    // If deleting a newly uploaded image (not yet saved to DB), remove from storage
-    if (imageToRemove.path && !imageToRemove.id) {
+    // Determine the storage path
+    let storagePath: string | null = null
+    
+    if (imageToRemove.path) {
+      // Newly uploaded image with path
+      storagePath = imageToRemove.path
+    } else if (imageToRemove.url) {
+      // Existing image - extract path from URL
+      storagePath = extractStoragePath(imageToRemove.url)
+    }
+
+    // Delete from storage if we have a path
+    if (storagePath) {
       try {
-        const response = await fetch(`/api/admin/products/upload-image?path=${encodeURIComponent(imageToRemove.path)}`, {
+        const response = await fetch(`/api/admin/products/upload-image?path=${encodeURIComponent(storagePath)}`, {
           method: 'DELETE'
         })
         if (!response.ok) {

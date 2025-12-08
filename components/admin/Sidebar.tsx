@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard,
   Package,
@@ -10,6 +10,8 @@ import {
   LogOut
 } from 'lucide-react'
 import clsx from 'clsx'
+import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -20,6 +22,21 @@ const navigation = [
 
 export default function AdminSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      router.push('/login')
+      router.refresh()
+    } catch (error) {
+      console.error('Error logging out:', error)
+      setIsLoggingOut(false)
+    }
+  }
 
   return (
     <div className="flex flex-col w-64 bg-gray-900 min-h-screen">
@@ -54,13 +71,14 @@ export default function AdminSidebar() {
 
       {/* Bottom Actions */}
       <div className="px-4 py-4 border-t border-gray-800">
-        <Link
-          href="/"
-          className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors"
+        <button
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="flex items-center gap-3 px-4 py-3 w-full text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <LogOut className="h-5 w-5" />
-          <span className="font-medium">Back to Store</span>
-        </Link>
+          <span className="font-medium">{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
+        </button>
       </div>
     </div>
   )

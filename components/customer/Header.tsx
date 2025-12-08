@@ -3,9 +3,19 @@
 import Link from 'next/link'
 import { ShoppingCart, User, Search, Menu } from 'lucide-react'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const router = useRouter()
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
 
   return (
     <header className="bg-white border-b sticky top-0 z-50">
@@ -18,39 +28,29 @@ export default function Header() {
           </Link>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-xl mx-8">
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8">
             <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Search products..."
-                className="w-full px-4 py-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 pl-10 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              <button
+                type="submit"
+                className="absolute right-3 top-2.5 text-blue-600 hover:text-blue-700"
+                aria-label="Search"
+              >
+                <Search className="h-5 w-5" />
+              </button>
             </div>
-          </div>
+          </form>
 
           {/* Right Icons */}
           <div className="flex items-center gap-4">
-            <Link
-              href="/account"
-              className="hidden md:flex items-center gap-2 text-gray-700 hover:text-blue-600"
-            >
-              <User className="h-6 w-6" />
-              <span className="text-sm">Account</span>
-            </Link>
-
-            <Link
-              href="/cart"
-              className="relative flex items-center gap-2 text-gray-700 hover:text-blue-600"
-            >
-              <ShoppingCart className="h-6 w-6" />
-              <span className="hidden md:inline text-sm">Cart</span>
-              {/* Cart count badge */}
-              <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
-            </Link>
-
+     
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden"
@@ -82,10 +82,31 @@ export default function Header() {
           </Link>
         </nav> */}
 
-        {/* Mobile Menu */}
-        {/* {mobileMenuOpen && (
+        {/* Mobile Search and Menu */}
+        {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col gap-4">
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-2 pl-10 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <button
+                  type="submit"
+                  className="absolute right-3 top-2.5 text-blue-600 hover:text-blue-700"
+                  aria-label="Search"
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+              </div>
+            </form>
+            {/* Mobile Navigation */}
+            {/* <div className="flex flex-col gap-4">
               <Link href="/products" className="text-gray-700 hover:text-blue-600">
                 All Products
               </Link>
@@ -104,9 +125,9 @@ export default function Header() {
               <Link href="/account" className="text-gray-700 hover:text-blue-600">
                 My Account
               </Link>
-            </div>
+            </div> */}
           </div>
-        )} */}
+        )}
       </div>
     </header>
   )

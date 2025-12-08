@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getFeaturedProducts, getNewArrivals } from '@/lib/api/products'
 import ProductGrid from '@/components/customer/ProductGrid'
 import { ArrowRight } from 'lucide-react'
+import Threads from '@/components/backgrounds/Threads'
 
 export default async function HomePage() {
   const [featuredProducts, newArrivals] = await Promise.all([
@@ -12,8 +13,16 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <div className="container mx-auto px-4 py-20">
+      <section className="relative bg-gradient-to-r from-blue-900 to-blue-800 text-white overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Threads 
+            color={[1, 1, 1]} 
+            amplitude={1}
+            distance={0}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="max-w-3xl">
             <h1 className="text-5xl font-bold mb-6">
               Discover Caribbean & Latin America

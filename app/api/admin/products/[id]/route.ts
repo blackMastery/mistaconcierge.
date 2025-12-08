@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // Check if user is admin
 async function checkAdminAuth() {
@@ -16,7 +17,7 @@ async function checkAdminAuth() {
     .eq('id', user.id)
     .single()
   
-  if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+  if (!profile || !['admin', 'super_admin'].includes((profile as { role?: string }).role || '')) {
     return { isAdmin: false, error: 'Forbidden' }
   }
   
@@ -74,31 +75,75 @@ export async function PUT(
     const sanitizedData = sanitizeNumericFields(productData)
     
     // Update product
-    const { data: product, error: productError } = await supabase
+    const updateResult = await supabase
       .from('products')
+      // @ts-ignore - TypeScript limitation with dynamic update types
       .update(sanitizedData)
       .eq('id', params.id)
       .select()
       .single()
     
+    const { data: product, error: productError } = updateResult
+    
     if (productError) throw productError
     
     // Update images if provided
     if (image_data !== undefined) {
-      // Get existing images to delete from storage if needed
+      // Get existing images with URLs to delete from storage if needed
       const { data: existingImages } = await supabase
         .from('product_images')
-        .select('path')
+        .select('url')
         .eq('product_id', params.id)
+      
+      // Extract storage paths from existing image URLs
+      const extractStoragePath = (url: string): string | null => {
+        try {
+          const urlObj = new URL(url)
+          const pathMatch = urlObj.pathname.match(/\/storage\/v1\/object\/public\/product-images\/(.+)$/)
+          if (pathMatch && pathMatch[1]) {
+            return pathMatch[1]
+          }
+          return null
+        } catch {
+          return null
+        }
+      }
+      
+      // Get URLs of images that will remain
+      const remainingUrls = new Set(
+        (image_data || []).map((img: any) => img.url)
+      )
+      
+      // Find images to delete from storage (existing images not in the new list)
+      const imagesToDelete: string[] = []
+      if (existingImages && Array.isArray(existingImages)) {
+        for (const existingImg of existingImages) {
+          const imgUrl = (existingImg as { url: string }).url
+          if (!remainingUrls.has(imgUrl)) {
+            const path = extractStoragePath(imgUrl)
+            if (path) {
+              imagesToDelete.push(path)
+            }
+          }
+        }
+      }
+      
+      // Delete images from storage
+      if (imagesToDelete.length > 0) {
+        const { error: storageDeleteError } = await supabaseAdmin.storage
+          .from('product-images')
+          .remove(imagesToDelete)
+        
+        if (storageDeleteError) {
+          console.error('Error deleting images from storage:', storageDeleteError)
+        }
+      }
       
       // Delete existing images from database
       await supabase
         .from('product_images')
         .delete()
         .eq('product_id', params.id)
-      
-      // Note: We don't delete from storage here to avoid accidental deletions
-      // Storage cleanup can be handled separately if needed
       
       // Insert new images
       if (image_data && image_data.length > 0) {
