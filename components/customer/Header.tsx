@@ -14,7 +14,7 @@ export default function Header() {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-gray-900">
-            YourStore
+            MISTA Concierge Travel CO.
           </Link>
 
           {/* Search Bar - Desktop */}
@@ -61,7 +61,7 @@ export default function Header() {
         </div>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-8 py-3 border-t">
+        {/* <nav className="hidden md:flex items-center gap-8 py-3 border-t">
           <Link href="/products" className="text-gray-700 hover:text-blue-600 font-medium">
             All Products
           </Link>
@@ -80,10 +80,10 @@ export default function Header() {
           <Link href="/categories/sale" className="text-red-600 hover:text-red-700 font-medium">
             Sale
           </Link>
-        </nav>
+        </nav> */}
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
+        {/* {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col gap-4">
               <Link href="/products" className="text-gray-700 hover:text-blue-600">
@@ -106,7 +106,7 @@ export default function Header() {
               </Link>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </header>
   )

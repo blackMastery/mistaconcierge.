@@ -5,10 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Package,
-  ShoppingCart,
-  Users,
   FolderTree,
-  Star,
   Settings,
   LogOut
 } from 'lucide-react'
@@ -17,10 +14,7 @@ import clsx from 'clsx'
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Products', href: '/admin/products', icon: Package },
-  { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
-  { name: 'Customers', href: '/admin/customers', icon: Users },
   { name: 'Categories', href: '/admin/categories', icon: FolderTree },
-  { name: 'Reviews', href: '/admin/reviews', icon: Star },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
 

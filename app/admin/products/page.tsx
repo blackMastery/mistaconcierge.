@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { createServerClient } from '@/lib/supabase/server'
 import { formatCurrency } from '@/lib/utils/currency'
-import { Plus, Edit, Trash2 } from 'lucide-react'
+import { Plus, Edit, Package } from 'lucide-react'
+import DeleteProductButton from '@/components/admin/DeleteProductButton'
 
 export default async function AdminProductsPage() {
   const supabase = createServerClient()
@@ -123,19 +124,14 @@ export default async function AdminProductsPage() {
                           <Link
                             href={`/admin/products/${product.id}`}
                             className="text-blue-600 hover:text-blue-700"
+                            title="Edit product"
                           >
                             <Edit className="h-5 w-5" />
                           </Link>
-                          <button
-                            className="text-red-600 hover:text-red-700"
-                            onClick={() => {
-                              if (confirm('Are you sure you want to delete this product?')) {
-                                // Add delete functionality
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
+                          <DeleteProductButton
+                            productId={product.id}
+                            productName={product.name}
+                          />
                         </div>
                       </td>
                     </tr>

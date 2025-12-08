@@ -8,9 +8,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-white text-lg font-bold mb-4">YourStore</h3>
+            <h3 className="text-white text-lg font-bold mb-4">MISTA Concierge Travel CO.</h3>
             <p className="text-sm mb-4">
-              Premium bathroom vanities and fixtures for your home.
+              Mista Concierge Travel Company is a specialty travel and leisure provider specializing in Caribbean and Latin America travel. Experience solo, private or guided vacation offerings with a full concierge level service.
+            </p>
+            <p className="text-sm text-gray-400 mb-4">
+              Lot 10 Lusignan Public Rd, ECD
             </p>
             <div className="flex gap-4">
               <a href="#" className="hover:text-white">
@@ -64,7 +67,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
-          <p>&copy; {new Date().getFullYear()} YourStore. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} MISTA Concierge Travel CO. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white">Terms of Service</Link>

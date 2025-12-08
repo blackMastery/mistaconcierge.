@@ -4,8 +4,8 @@ import AdminSidebar from '@/components/admin/Sidebar'
 import '../globals.css'
 
 export const metadata = {
-  title: 'Admin Panel - YourStore',
-  description: 'Manage your e-commerce store',
+  title: 'Admin Panel - MISTA Concierge Travel CO.',
+  description: 'Manage your travel services',
 }
 
 export default async function AdminLayout({

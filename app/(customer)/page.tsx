@@ -16,11 +16,11 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 py-20">
           <div className="max-w-3xl">
             <h1 className="text-5xl font-bold mb-6">
-              Transform Your Bathroom
+              Discover Caribbean & Latin America
             </h1>
             <p className="text-xl mb-8 text-blue-100">
-              Discover our premium collection of bathroom vanities, LED mirrors, and luxury fixtures. 
-              Quality craftsmanship meets modern design.
+              Experience solo, private or guided vacation offerings with a full concierge level service. 
+              Specializing in Caribbean and Latin America travel.
             </p>
             <div className="flex gap-4">
               <Link 
@@ -42,7 +42,7 @@ export default async function HomePage() {
       </section>
 
       {/* Featured Categories */}
-      <section className="py-16 bg-gray-50">
+      {/* <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Shop by Category</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -89,7 +89,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Featured Products */}
       {featuredProducts && featuredProducts.length > 0 && (
