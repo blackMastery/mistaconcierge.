@@ -11,8 +11,8 @@ export default async function NewCategoryPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">New Category</h1>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">New Category</h1>
         <p className="text-gray-600 mt-2">Create a new product category</p>
       </div>
 

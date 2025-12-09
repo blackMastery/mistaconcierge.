@@ -276,10 +276,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
       {/* Basic Information */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Basic Information</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
@@ -340,8 +340,8 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       </div>
 
       {/* Pricing & Inventory */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Pricing & Inventory</h2>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Pricing & Inventory</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -385,10 +385,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       </div>
 
       {/* Dimensions */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Dimensions</h2>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Dimensions</h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Width (in)</label>
             <input
@@ -440,8 +440,8 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       </div>
 
       {/* Product Images */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Product Images</h2>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Product Images</h2>
         
         <div className="mb-4">
           <input
@@ -539,9 +539,9 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       </div>
 
       {/* Categories */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Categories</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Categories</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {categories.map((category) => (
             <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
               <input
@@ -557,8 +557,8 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       </div>
 
       {/* Status & Features */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Status & Features</h2>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Status & Features</h2>
         
         <div className="space-y-4">
           <div>
@@ -575,7 +575,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             </select>
           </div>
           
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <label className="flex items-center space-x-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -600,18 +600,18 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       </div>
 
       {/* Submit Buttons */}
-      <div className="flex justify-end gap-3">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full sm:w-auto"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading || uploadingImages}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors w-full sm:w-auto"
         >
           {loading ? 'Saving...' : uploadingImages ? 'Uploading Images...' : product ? 'Update Product' : 'Create Product'}
         </button>

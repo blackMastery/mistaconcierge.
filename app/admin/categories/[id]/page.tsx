@@ -30,8 +30,8 @@ export default async function EditCategoryPage({ params }: EditCategoryPageProps
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Edit Category</h1>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Edit Category</h1>
         <p className="text-gray-600 mt-2">Update category information</p>
       </div>
 
